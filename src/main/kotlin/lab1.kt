@@ -33,9 +33,11 @@ fun main() {
     }
     println("Бисекция сплан-функции: х = $splineResult")
     println("Бисекция лагранж-функции: х = $lagrangeResult")
+    DrawFunction().isVisible = true
 }
 
 //Замена f(x) в уравнение f(x) + 5x - 3 = 0 на интерполяционную функцию.
 fun equation(f: UnivariateFunction): UnivariateFunction {
     return UnivariateFunction { x -> f.value(x) + 5 * x - 3 }
 }
+
