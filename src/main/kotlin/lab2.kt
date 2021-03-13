@@ -10,9 +10,10 @@ import org.apache.commons.math3.linear.RealMatrix
  *     { 1   1   1  ... a_(n-1)
  *     \ 1   1   1  ... 1
  * Задавая  n=5 , a_1 = 4 , a_2 = 3 , a_3 = 2 , a_4 = var = 1.5 ; 1.01 ; 1.001 ; 1.0001  и вычисляя  A^{-1}  с помощью
- * DECOMP  и  SOLVE  , найти нормы матриц R = AA^{-1} - E  для всех вариантов  a_4 .
+ * DECOMP  и  SOLVE  , найти нормы матриц R = A*A^{-1} - E  для всех вариантов  a_4 .
  **/
 
+// Данная функция формирует новую матрицу А по заданному вектору В.
 fun createMatrix(vectorB: Array<Double>): RealMatrix {
     val n = vectorB.size + 1
     val array = Array(n) { DoubleArray(n) }
@@ -30,12 +31,34 @@ fun createMatrix(vectorB: Array<Double>): RealMatrix {
     return Array2DRowRealMatrix(array, false)
 }
 
+// Выводим результаты работы программы.
 fun main() {
     for (i in arrayOf(1.5, 1.01, 1.001, 1.0001)) {
+        // Вектор В из задания.
         val b = arrayOf(4.0, 3.0, 2.0, i)
+        //вызов функции фоздания матрицы по вектору В.
         val a = createMatrix(b)
+        // LU-разложение созданной матрицы.
         val lu = LUDecomposition(a)
+        // Нахождение матрицы R = A*A^{-1}-E.
         val r = a.multiply(lu.solver.inverse).subtract(lu.p)
-        println("a_4 = ${i}, norm = ${r?.norm}")
+
+        // вывод на консоль матрицы A.
+        println("матрица А: ")
+        for (el in a.data) {
+            println(el.toList())
+        }
+        // вывод на консоль матрицы A^{-1}.
+        println("матрица А^{-1}:")
+        for (el in lu.solver.inverse.data) {
+            println(el.toList())
+        }
+        // вывод на консоль матрицы R.
+        println("матрица R: ")
+        for (i in r.data){
+            println(i.toList())
+        }
+        // вывод в консоль нормы матрицы R.
+        println("a_4 = ${i}, норма матрицы R = ${r?.norm}")
     }
 }
