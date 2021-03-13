@@ -45,18 +45,18 @@ fun main() {
 
         // вывод на консоль матрицы A.
         println("матрица А: ")
-        for (el in a.data) {
-            println(el.toList())
+        for (row in a.data) {
+            println(row.toList())
         }
         // вывод на консоль матрицы A^{-1}.
         println("матрица А^{-1}:")
-        for (el in lu.solver.inverse.data) {
-            println(el.toList())
+        for (row in lu.solver.inverse.data) {
+            println(row.toList())
         }
         // вывод на консоль матрицы R.
         println("матрица R: ")
-        for (i in r.data){
-            println(i.toList())
+        for (row in r.data){
+            println(row.toList())
         }
         // вывод в консоль нормы матрицы R.
         println("a_4 = ${i}, норма матрицы R = ${r?.norm}")
