@@ -1,6 +1,7 @@
 import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import org.apache.commons.math3.linear.LUDecomposition
 import org.apache.commons.math3.linear.RealMatrix
+import org.apache.commons.math3.linear.SingularValueDecomposition
 
 /**
  * Написать процедуру формирования матрицы  A  по заданному вектору  B
@@ -48,6 +49,8 @@ fun main() {
         for (row in a.data) {
             println(row.toList())
         }
+        // вывод числа обусловленности иследуемой матрицы.
+        println("число обусловленности матрицы А = ${SingularValueDecomposition(a).conditionNumber}")
         // вывод на консоль матрицы A^{-1}.
         println("матрица А^{-1}:")
         for (row in lu.solver.inverse.data) {
