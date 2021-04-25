@@ -3,88 +3,106 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class RungeKutta {
-    private val k = 2
-    private var Yo: Double = 0.0
-    private var Y1: Double = 0.0
-    private var Zo: Double = 0.0
-    private var Z1: Double = 0.0
-    private var k1: Double = 0.0
-    private var k2: Double = 0.0
-    private var k4: Double = 0.0
-    private var k3: Double = 0.0
-    private var q1: Double = 0.0
-    private var q2: Double = 0.0
-    private var q4: Double = 0.0
-    private var q3: Double = 0.0
-
-    fun rk4() {
-        Yo = exp(2.0)
-        Zo = 2 * exp(2.0)
-        var Xo: Double = 1.0
-        val h: Double = 0.1
-//        val coefficients = mapOf<String, Double>()
-        println("Рунге-Кутты 4 порядка")
-        println("\t\tX\t\t\tY\t\t\t\tY'")
-        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(Xo, k), Yo, Zo))
-        while (r(Xo, 2) < 2.0) {
-            k1 = h * f(Xo, Yo, Zo)
-            q1 = h * g(Xo, Yo, Zo)
-            k2 = h * f(Xo + h / 2.0, Yo + q1 / 2.0, Zo + k1 / 2.0)
-            q2 = h * g(Xo + h / 2.0, Yo + q1 / 2.0, Zo + k1 / 2.0)
-            k3 = h * f(Xo + h / 2.0, Yo + q2 / 2.0, Zo + k2 / 2.0)
-            q3 = h * g(Xo + h / 2.0, Yo + q2 / 2.0, Zo + k2 / 2.0)
-            k4 = h * f(Xo + h, Yo + q3, Zo + k3)
-            q4 = h * g(Xo + h, Yo + q3, Zo + k3)
-            Z1 = Zo + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0
-            Y1 = Yo + (q1 + 2.0 * q2 + 2.0 * q3 + q4) / 6.0
-            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(Xo + h, k), Y1, Z1))
-            Yo = Y1
-            Zo = Z1
-            Xo += h
-        }
-    }
-
-    fun rk3() {
-        var Xo: Double = 1.0
-        Yo = exp(2.0)
-        Zo = 2 * exp(2.0)
-        val h: Double = 0.1
-
-        println("Рунге-Кутты 3 порядка")
-        println("\t\tX\t\t\tY\t\t\t\tY'")
-        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(Xo, k), Yo, Zo))
-        while (r(Xo, 2) < 2.0) {
-            k1 = h * f(Xo, Yo, Zo)
-            q1 = h * g(Xo, Yo, Zo)
-            k2 = h * f(Xo + h / 2.0, Yo + q1 / 2.0, Zo + k1 / 2.0)
-            q2 = h * g(Xo + h / 2.0, Yo + q1 / 2.0, Zo + k1 / 2.0)
-            k3 = h * f(Xo + h, Yo + q2 * 2.0 - k1, Zo + k2 * 2.0 - k1)
-            q3 = h * g(Xo + h, Yo + q2 * 2.0 - k1, Zo + k2 * 2.0 - k1)
-
-            Z1 = Zo + (k1 + 4.0 * k2 + k3) / 6.0
-            Y1 = Yo + (q1 + 4.0 * q2 + q3) / 6.0
-            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(Xo + h, k), Y1, Z1))
-            Yo = Y1
-            Zo = Z1
-            Xo += h
-        }
-    }
 
     /**
-     * функция для округления и отбрасывания "хвоста"
-     */
-    fun r(value: Double, k: Int): Double {
-        return (10.0.pow(k.toDouble()) * value).roundToInt().toDouble() / 10.0.pow(k.toDouble())
+    * функция для округления и отбрасывания "хвоста"
+    */
+    private fun r(value: Double, k: Double): Double {
+        return (10.0.pow(k) * value).roundToInt().toDouble() / 10.0.pow(k)
     }
 
     /**
      * функции, которые получаются из системы
      */
-    fun f(x: Double, y: Double, z: Double): Double {
+    private fun f(x: Double, y: Double, z: Double): Double {
         return ((x + 1) * z + 2 * (x - 1) * y) / x
     }
 
-    fun g(x: Double, y: Double, z: Double): Double {
+    private fun g(x: Double, y: Double, z: Double): Double {
         return z
     }
+
+    /**
+     * Начальные условия
+     */
+    private val stateVector = doubleArrayOf(exp(2.0), 2 * exp(2.0))
+
+    /**
+     * Конец промкжутка интегрирования и шаг интегрирования
+     */
+    private val start = 1.0
+    private val end = 2.0
+    private val h: Double = 0.1
+
+    /**
+     * Реализация метода Рунге-Кутты 4 порядка
+     */
+    fun rk4() {
+        // инициализация начальных условий
+        var y0 = stateVector[0]
+        var z0 = stateVector[1]
+        var x0: Double = start
+        var y1: Double
+        var z1: Double
+        // инициализация коэффициентов
+        val coefficients = mutableMapOf("k1" to 0.0, "k2" to 0.0, "k3" to 0.0, "k4" to 0.0,
+            "q1" to 0.0, "q2" to 0.0, "q3" to 0.0, "q4" to 0.0,)
+        // печать заголовка и начальных значений
+        println("Рунге-Кутты 4 порядка")
+        println("\t\tX\t\t\tY\t\t\t\tY'")
+        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(x0, end), y0, z0))
+        // интегрирование заданной функции и вывод результата по зашагам
+        while (r(x0, end) < end) {
+            coefficients["k1"] = h * f(x0, y0, z0)
+            coefficients["q1"] = h * g(x0, y0, z0)
+            coefficients["k2"] = h * f(x0 + h / 2.0, y0 + coefficients["q1"]!! / 2.0, z0 + coefficients["k1"]!! / 2.0)
+            coefficients["q2"] = h * g(x0 + h / 2.0, y0 + coefficients["q1"]!! / 2.0, z0 + coefficients["k1"]!! / 2.0)
+            coefficients["k3"] = h * f(x0 + h / 2.0, y0 + coefficients["q2"]!! / 2.0, z0 + coefficients["k2"]!! / 2.0)
+            coefficients["q3"] = h * g(x0 + h / 2.0, y0 + coefficients["q2"]!! / 2.0, z0 + coefficients["k2"]!! / 2.0)
+            coefficients["k4"] = h * f(x0 + h, y0 + coefficients["q3"]!!, z0 + coefficients["k3"]!!)
+            coefficients["q4"] = h * g(x0 + h, y0 + coefficients["q3"]!!, z0 + coefficients["k3"]!!)
+            z1 = z0 + (coefficients["k1"]!! + 2.0 * coefficients["k2"]!! + 2.0 * coefficients["k3"]!! + coefficients["k4"]!!) / 6.0
+            y1 = y0 + (coefficients["q1"]!! + 2.0 * coefficients["q2"]!! + 2.0 * coefficients["q3"]!! + coefficients["q4"]!!) / 6.0
+            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(x0 + h, end), y1, z1))
+            y0 = y1
+            z0 = z1
+            x0 += h
+        }
+    }
+
+    /**
+     * Реализация метода Рунге-Кутты 3 порядка
+     */
+    fun rk3() {
+        // инициализация начальных условий
+        var x0: Double = start
+        var y0 = stateVector[0]
+        var z0 = stateVector[1]
+        var y1: Double
+        var z1: Double
+        // инициализация коэффициентов
+        val coefficients = mutableMapOf("k1" to 0.0, "k2" to 0.0, "k3" to 0.0,
+            "q1" to 0.0, "q2" to 0.0, "q3" to 0.0)
+        // печать заголовка и начальных значений
+        println("Рунге-Кутты 3 порядка")
+        println("\t\tX\t\t\tY\t\t\t\tY'")
+        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(x0, end), y0, z0))
+        // интегрирование заданной функции и вывод результата по зашагам
+        while (r(x0, end) < 2.0) {
+            coefficients["k1"] = h * f(x0, y0, z0)
+            coefficients["q1"] = h * g(x0, y0, z0)
+            coefficients["k2"] = h * f(x0 + h / 2.0, y0 + coefficients["q1"]!! / 2.0, z0 + coefficients["k1"]!! / 2.0)
+            coefficients["q2"] = h * g(x0 + h / 2.0, y0 + coefficients["q1"]!! / 2.0, z0 + coefficients["k1"]!! / 2.0)
+            coefficients["k3"] = h * f(x0 + h, y0 + coefficients["q2"]!! * 2.0 - coefficients["k1"]!!, z0 + coefficients["k2"]!! * 2.0 - coefficients["k1"]!!)
+            coefficients["q3"] = h * g(x0 + h, y0 + coefficients["q2"]!! * 2.0 - coefficients["k1"]!!, z0 + coefficients["k2"]!! * 2.0 - coefficients["k1"]!!)
+
+            z1 = z0 + (coefficients["k1"]!! + 4.0 * coefficients["k2"]!! + coefficients["k3"]!!) / 6.0
+            y1 = y0 + (coefficients["q1"]!! + 4.0 * coefficients["q2"]!! + coefficients["q3"]!!) / 6.0
+            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", r(x0 + h, end), y1, z1))
+            y0 = y1
+            z0 = z1
+            x0 += h
+        }
+    }
+
 }
