@@ -6,39 +6,30 @@ class Adams {
     /**
      * Данная функция использует библиотечное решение ДУ методом Адамса-Башфорта
      */
-    fun adamsBashforth() {
-        // Печать заголовка
-        println("Адамса-Башфорта 2 порядка")
-        println("\t\tX\t\t\tY\t\t\t\tY'")
+    fun adamsBashforth(): Map<String, Pair<Double, Double>>  {
         // создание объекта класса AdamsBashforthIntegrator 2 порядка
-        val ad = AdamsBashforthIntegrator(2, 0.0125, 0.05, 0.00001, 0.0001)
+        val ad = AdamsBashforthIntegrator(2, 0.025, 0.05, 0.00001, 0.0001)
         val equation = RungeKuttaFehlburg.CoupledOdes()
         val stateVector = equation.initialConditions.clone()
-        var t = 1.0
-        while (t < 2.0) {
-            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", t, stateVector[0], stateVector[1]))
-            ad.integrate(equation, 1.0, stateVector, 2.0, stateVector)
-            t += 1.0
-        }
-        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", t, stateVector[0], stateVector[1]))
+        val sol = mutableMapOf<String, Pair<Double, Double>>()
+        sol["1.0"] = Pair(stateVector[0], stateVector[1])
+        ad.integrate(equation, 1.0, stateVector, 2.0, stateVector)
+        sol["2.0"] = Pair(stateVector[0], stateVector[1])
+        return sol
     }
 
     /**
      * Данная функция использует библиотечное решение ДУ методом Адамса-Моултона
      */
 
-    fun adamasMoulton(){
-        println("Адамса-Моултона 2 порядка")
-        println("\t\tX\t\t\tY\t\t\t\tY'")
+    fun adamasMoulton(): Map<String, Pair<Double, Double>>{
         val ad = AdamsMoultonIntegrator(2, 0.0125, 0.05, 0.00001, 0.0001)
         val equation = RungeKuttaFehlburg.CoupledOdes()
         val stateVector = equation.initialConditions.clone()
-        var t = 1.0
-        while (t < 2.0) {
-            println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", t, stateVector[0], stateVector[1]))
-            ad.integrate(equation, 1.0, stateVector, 2.0, stateVector)
-            t += 1.0
-        }
-        println(String.format("%10.1f \t\t%10.9f\t\t%10.9f", t, stateVector[0], stateVector[1]))
+        val sol = mutableMapOf<String, Pair<Double, Double>>()
+        sol["1.0"] = Pair(stateVector[0], stateVector[1])
+        ad.integrate(equation, 1.0, stateVector, 2.0, stateVector)
+        sol["2.0"] = Pair(stateVector[0], stateVector[1])
+        return sol
     }
 }
