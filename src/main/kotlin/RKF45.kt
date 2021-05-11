@@ -14,14 +14,14 @@ class RungeKuttaFehlburg(
     fun rkf45(): Map<String, Pair<Double, Double>> {
         val maxTime = maxStep
         val sol = mutableMapOf<String, Pair<Double, Double>>()
-        // вызов библиотечной функции rkf45 с заданным шагом
+        // вызов библиотечной функции rkf5 с заданным шагом
         val firstOrderIntegrator = LutherIntegrator(step)
         val odes: FirstOrderDifferentialEquations = CoupledOdes()
         val y = (odes as CoupledOdes).initialConditions.clone()
         var t = minStep
         // интегрирование заданной функции и вывод результата по зашагам
         do {
-            val round = ((t * 10.0).roundToInt() / 10.0).toString()
+            val round = ((t * 100.0).roundToInt() / 100.0).toString()
             sol[round] = Pair(y[0], y[1])
             firstOrderIntegrator.integrate(odes, t, y, t + step, y)
             t += step

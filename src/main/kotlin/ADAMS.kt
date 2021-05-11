@@ -8,7 +8,7 @@ class Adams {
      */
     fun adamsBashforth(): Map<String, Pair<Double, Double>>  {
         // создание объекта класса AdamsBashforthIntegrator 2 порядка
-        val ad = AdamsBashforthIntegrator(2, 0.025, 0.05, 0.00001, 0.0001)
+        val ad = AdamsBashforthIntegrator(2, 0.00625, 0.1, 0.00001, 0.0001)
         val equation = RungeKuttaFehlburg.CoupledOdes()
         val stateVector = equation.initialConditions.clone()
         val sol = mutableMapOf<String, Pair<Double, Double>>()
@@ -23,7 +23,7 @@ class Adams {
      */
 
     fun adamasMoulton(): Map<String, Pair<Double, Double>>{
-        val ad = AdamsMoultonIntegrator(2, 0.0125, 0.05, 0.00001, 0.0001)
+        val ad = AdamsMoultonIntegrator(2, 0.00625, 0.1, 0.00001, 0.0001)
         val equation = RungeKuttaFehlburg.CoupledOdes()
         val stateVector = equation.initialConditions.clone()
         val sol = mutableMapOf<String, Pair<Double, Double>>()

@@ -52,7 +52,7 @@ class RungeKutta {
             coefficients["q4"] = h * g(x0 + h, y0 + coefficients["q3"]!!, z0 + coefficients["k3"]!!)
             z1 = z0 + (coefficients["k1"]!! + 2.0 * coefficients["k2"]!! + 2.0 * coefficients["k3"]!! + coefficients["k4"]!!) / 6.0
             y1 = y0 + (coefficients["q1"]!! + 2.0 * coefficients["q2"]!! + 2.0 * coefficients["q3"]!! + coefficients["q4"]!!) / 6.0
-            val round = ((x0 * 10.0).roundToInt() / 10.0).toString()
+            val round = ((x0 * 100.0).roundToInt() / 100.0).toString()
             sol[round] = Pair(y0, z0)
             y0 = y1
             z0 = z1
@@ -90,7 +90,7 @@ class RungeKutta {
 
             z1 = z0 + (coefficients["k1"]!! + 4.0 * coefficients["k2"]!! + coefficients["k3"]!!) / 6.0
             y1 = y0 + (coefficients["q1"]!! + 4.0 * coefficients["q2"]!! + coefficients["q3"]!!) / 6.0
-            val round = ((x0 * 10.0).roundToInt() / 10.0).toString()
+            val round = ((x0 * 100.0).roundToInt() / 100.0).toString()
             sol[round] = Pair(y0, z0)
             y0 = y1
             z0 = z1
